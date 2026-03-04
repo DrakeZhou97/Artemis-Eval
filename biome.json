@@ -1,0 +1,88 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.4.2/schema.json",
+	"files": {
+		"includes": ["**", "!.next", "!out", "!build", "!.vercel"]
+	},
+	"formatter": {
+		"enabled": true,
+		"lineWidth": 120,
+		"lineEnding": "lf",
+		"indentStyle": "tab",
+		"indentWidth": 4
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"style": {
+				"useComponentExportOnlyModules": {
+					"level": "warn",
+					"options": {
+						"allowExportNames": [
+							"metadata",
+							"generateMetadata",
+							"generateStaticParams",
+							"generateViewport",
+							"viewport",
+							"config",
+							"revalidate",
+							"dynamic",
+							"dynamicParams",
+							"fetchCache",
+							"preferredRegion",
+							"runtime",
+							"maxDuration",
+							"GET",
+							"POST",
+							"PUT",
+							"DELETE",
+							"PATCH",
+							"HEAD",
+							"OPTIONS"
+						]
+					}
+				}
+			}
+		},
+		"domains": {
+			"next": "all",
+			"react": "all"
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"recommended": true
+			}
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		},
+		"linter": {
+			"enabled": true
+		},
+		"formatter": {
+			"enabled": true
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["**/*.css"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noUnknownAtRules": {
+							"level": "error",
+							"options": {
+								"ignore": ["plugin"]
+							}
+						}
+					}
+				}
+			}
+		}
+	]
+}
