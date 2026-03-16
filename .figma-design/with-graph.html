@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artemis - Home Page With Graph</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #fff; color: #101828; }
+
+  /* Layout */
+  .page { display: flex; width: 1440px; height: 900px; overflow: hidden; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 256px;
+    min-width: 256px;
+    height: 100%;
+    background: #fff;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-header {
+    padding: 24px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 101px;
+  }
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #9810FA 0%, #155DFC 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-icon svg { color: #fff; }
+  .logo-text h1 { font-size: 24px; font-weight: 600; line-height: 36px; letter-spacing: 0.07px; color: #101828; }
+  .logo-text p { font-size: 12px; font-weight: 400; line-height: 16px; color: #6a7282; }
+
+  .nav { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.31px;
+    color: #364153;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .nav-link.active {
+    background: #faf5ff;
+    color: #8200db;
+  }
+  .nav-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  .sidebar-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 16px;
+  }
+  .pro-tip {
+    background: linear-gradient(158deg, #faf5ff 0%, #eff6ff 100%);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .pro-tip-title { font-size: 14px; font-weight: 500; line-height: 20px; letter-spacing: -0.15px; color: #101828; margin-bottom: 4px; }
+  .pro-tip-text { font-size: 12px; font-weight: 400; line-height: 16px; color: #4a5565; }
+
+  /* Main content */
+  .main-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #f9fafb;
+    overflow: hidden;
+  }
+
+  /* Header bar */
+  .top-bar {
+    height: 71px;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 32px;
+  }
+  .env-switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .env-label { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: -0.15px; color: #4a5565; }
+  .env-buttons { display: flex; gap: 8px; }
+  .env-btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: -0.15px;
+    border: none;
+    cursor: pointer;
+  }
+  .env-btn.active { background: #dbeafe; color: #1447e6; border: 1px solid #8ec5ff; }
+  .env-btn.inactive { background: #f3f4f6; color: #4a5565; border: 1px solid transparent; }
+
+  /* Content area */
+  .content {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* Page header */
+  .page-header {}
+  .page-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .page-title-row svg { width: 32px; height: 32px; color: #8200db; }
+  .page-title {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0.4px;
+    color: #101828;
+  }
+  .page-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: -0.31px;
+    color: #4a5565;
+    margin-bottom: 12px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eceef2;
+    border-radius: 8px;
+    padding: 3px 9px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #030213;
+  }
+
+  /* Stats cards */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .stat-card {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 14px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .stat-label { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: -0.15px; color: #4a5565; margin-bottom: 4px; }
+  .stat-value { font-size: 30px; font-weight: 700; line-height: 36px; letter-spacing: 0.4px; color: #101828; }
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .stat-icon.purple { background: #f3e8ff; color: #8200db; }
+  .stat-icon.blue { background: #dbeafe; color: #1447e6; }
+  .stat-icon.orange { background: #ffedd4; }
+  .stat-icon svg { width: 24px; height: 24px; }
+
+  /* Search bar */
+  .search-bar {
+    position: relative;
+  }
+  .search-bar input {
+    width: 100%;
+    height: 36px;
+    background: #f3f3f5;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 4px 12px 4px 40px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: -0.15px;
+    color: #101828;
+    outline: none;
+  }
+  .search-bar input::placeholder { color: #717182; }
+  .search-bar svg {
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    width: 20px;
+    height: 20px;
+    color: #717182;
+  }
+
+  /* Graph Timeline Section */
+  .graph-section {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .graph-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #101828;
+    margin-bottom: 4px;
+  }
+  .graph-section-subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #4a5565;
+    margin-bottom: 24px;
+  }
+
+  /* Graph container */
+  .graph-timeline {
+    position: relative;
+    padding: 0 16px;
+  }
+
+  /* Connection lines via SVG */
+  .graph-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .graph-svg line, .graph-svg path {
+    stroke: #d1d5db;
+    stroke-width: 2;
+    fill: none;
+  }
+  .graph-svg .arrow-line {
+    stroke: #d1d5db;
+    stroke-width: 2;
+    fill: none;
+    marker-end: url(#arrowhead);
+  }
+
+  /* Graph rows */
+  .graph-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+  .graph-row:last-child { margin-bottom: 0; }
+
+  /* Connectors */
+  .connector-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 0;
+    height: 32px;
+  }
+  .connector-line {
+    width: 2px;
+    height: 32px;
+    background: #d1d5db;
+  }
+
+  /* Node blocks */
+  .graph-node {
+    border-radius: 12px;
+    padding: 16px 20px;
+    min-width: 220px;
+    max-width: 280px;
+    cursor: pointer;
+    transition: box-shadow 0.15s, transform 0.15s;
+    position: relative;
+  }
+  .graph-node:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+  }
+
+  /* Node type: start/end */
+  .graph-node.start-node, .graph-node.end-node {
+    background: #101828;
+    color: #fff;
+    min-width: 100px;
+    max-width: 100px;
+    text-align: center;
+    padding: 10px 16px;
+    border-radius: 50px;
+  }
+  .graph-node.start-node .node-name,
+  .graph-node.end-node .node-name { color: #fff; font-weight: 600; font-size: 13px; }
+
+  /* Node type: regular agent node */
+  .graph-node.agent-node {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  .graph-node.agent-node.active {
+    border: 2px solid #8200db;
+    box-shadow: 0 0 0 3px rgba(130,0,219,0.1);
+  }
+
+  /* Node type: dispatcher (diamond-like) */
+  .graph-node.dispatcher-node {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    min-width: 200px;
+    max-width: 240px;
+    text-align: center;
+  }
+
+  .node-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .node-name {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: #101828;
+  }
+  .node-version-badge {
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: #f3e8ff;
+    color: #8200db;
+  }
+  .node-version-badge.active {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .node-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .node-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #6a7282;
+  }
+  .node-meta-row svg { width: 12px; height: 12px; flex-shrink: 0; color: #9ca3af; }
+  .node-meta-row .meta-label { color: #9ca3af; min-width: 22px; }
+  .node-meta-row .meta-value { color: #4a5565; }
+
+  .node-note {
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #6a7282;
+    font-style: italic;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Execution label on connector */
+  .connector-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    font-weight: 500;
+    color: #9ca3af;
+    background: #f9fafb;
+    padding: 0 6px;
+    white-space: nowrap;
+  }
+
+  /* Fork/join connectors */
+  .fork-connectors {
+    position: relative;
+    height: 40px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+  }
+  .fork-connectors svg {
+    width: 100%;
+    height: 40px;
+  }
+
+  /* Actual graph layout using a more structured approach */
+  .timeline-graph {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 16px 0 8px 0;
+  }
+
+  /* Layer row */
+  .layer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+  }
+
+  /* Vertical connector */
+  .v-connector {
+    display: flex;
+    justify-content: center;
+    height: 32px;
+    position: relative;
+  }
+  .v-line {
+    width: 2px;
+    height: 100%;
+    background: #d1d5db;
+  }
+
+  /* Horizontal branching connectors */
+  .branch-connector {
+    position: relative;
+    height: 40px;
+    width: 100%;
+    max-width: 800px;
+  }
+
+  /* The actual drawn graph */
+  .drawn-graph {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    min-height: 560px;
+  }
+
+  /* Absolute positioned nodes */
+  .abs-node {
+    position: absolute;
+  }
+
+  /* Connection lines between nodes */
+  .connections-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .connections-svg line {
+    stroke: #d1d5db;
+    stroke-width: 1.5;
+  }
+  .connections-svg .edge-label {
+    font-size: 10px;
+    fill: #9ca3af;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+
+  /* Orange dot */
+  .orange-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ff6900;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+          <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+          <path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>Artemis</h1>
+        <p>Observe and Evaluation</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a class="nav-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+        </svg>
+        Dashboard
+      </a>
+      <a class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+        Activate
+      </a>
+      <a class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/><path d="M12 5v14"/>
+        </svg>
+        New Prompt
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="pro-tip">
+        <div class="pro-tip-title">Pro Tip</div>
+        <div class="pro-tip-text">Use tags to organize and quickly find your prompts</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-wrap">
+    <!-- Top bar -->
+    <header class="top-bar">
+      <div class="env-switch">
+        <span class="env-label">Environment:</span>
+        <div class="env-buttons">
+          <button class="env-btn active">DEV</button>
+          <button class="env-btn inactive">PROD</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Page header -->
+      <div class="page-header">
+        <div class="page-title-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>
+          </svg>
+          <h1 class="page-title">Agent Graph Timeline</h1>
+        </div>
+        <p class="page-subtitle">Visualize your LangGraph agent prompts and their version history</p>
+        <span class="badge">DEV Environment</span>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">Active Nodes</div>
+            <div class="stat-value">8</div>
+          </div>
+          <div class="stat-icon purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">Total Versions</div>
+            <div class="stat-value">12</div>
+          </div>
+          <div class="stat-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">Environment</div>
+            <div class="stat-value" style="font-size:24px; line-height:32px;">Development</div>
+          </div>
+          <div class="stat-icon orange">
+            <div class="orange-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+        </svg>
+        <input type="text" placeholder="Search by title, key, note, or tags...">
+      </div>
+
+      <!-- Graph Timeline -->
+      <div class="graph-section">
+        <div class="graph-section-title">Agent Execution Graph</div>
+        <div class="graph-section-subtitle">Click any node to view and edit its prompt details</div>
+
+        <div class="drawn-graph" style="min-height: 620px;">
+          <!-- SVG Connection Lines -->
+          <svg class="connections-svg" viewBox="0 0 900 620" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L8,3 L0,6" fill="none" stroke="#d1d5db" stroke-width="1"/>
+              </marker>
+            </defs>
+
+            <!-- START → user_admittance -->
+            <line x1="450" y1="40" x2="300" y2="100" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+            <!-- START → intention_detection -->
+            <line x1="450" y1="40" x2="600" y2="100" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+            <!-- user_admittance → stage_dispatcher -->
+            <line x1="300" y1="185" x2="450" y2="250" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+            <!-- intention_detection → stage_dispatcher -->
+            <line x1="600" y1="185" x2="450" y2="250" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+            <!-- stage_dispatcher → planner -->
+            <line x1="450" y1="325" x2="450" y2="355" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+            <text x="480" y="345" class="edge-label">execution</text>
+
+            <!-- planner → tlc_agent -->
+            <line x1="380" y1="435" x2="170" y2="480" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+            <!-- planner → cc_agent -->
+            <line x1="450" y1="435" x2="450" y2="480" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+            <!-- planner → re_agent -->
+            <line x1="520" y1="435" x2="730" y2="480" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+            <!-- tlc_agent → END -->
+            <line x1="170" y1="565" x2="380" y2="600" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+            <!-- cc_agent → END -->
+            <line x1="450" y1="565" x2="450" y2="595" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+            <!-- re_agent → END -->
+            <line x1="730" y1="565" x2="520" y2="600" stroke="#d1d5db" stroke-width="1.5" marker-end="url(#arrow)"/>
+          </svg>
+
+          <!-- Row 0: START -->
+          <div class="abs-node" style="left: 50%; transform: translateX(-50%); top: 12px;">
+            <div class="graph-node start-node">
+              <div class="node-name">START</div>
+            </div>
+          </div>
+
+          <!-- Row 1: user_admittance & intention_detection (parallel) -->
+          <div class="abs-node" style="left: 130px; top: 90px;">
+            <div class="graph-node agent-node active" style="width: 250px;">
+              <div class="node-header">
+                <span class="node-name">user_admittance</span>
+                <span class="node-version-badge active">v2 active</span>
+              </div>
+              <div class="node-meta">
+                <div class="node-meta-row">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  <span class="meta-value">alice</span>
+                  <span style="color:#d1d5db; margin: 0 2px;">·</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                  <span class="meta-value">Mar 2, 2026</span>
+                </div>
+                <div class="node-note">"Refined gate conditions"</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="abs-node" style="right: 130px; top: 90px;">
+            <div class="graph-node agent-node active" style="width: 250px;">
+              <div class="node-header">
+                <span class="node-name">intention_detection</span>
+                <span class="node-version-badge active">v1 active</span>
+              </div>
+              <div class="node-meta">
+                <div class="node-meta-row">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  <span class="meta-value">system</span>
+                  <span style="color:#d1d5db; margin: 0 2px;">·</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                  <span class="meta-value">Mar 1, 2026</span>
+                </div>
+                <div class="node-note">"Initial seed"</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: stage_dispatcher -->
+          <div class="abs-node" style="left: 50%; transform: translateX(-50%); top: 240px;">
+            <div class="graph-node dispatcher-node" style="width: 220px;">
+              <div class="node-header" style="justify-content: center;">
+                <span class="node-name">stage_dispatcher</span>
+              </div>
+              <div class="node-meta">
+                <div class="node-meta-row" style="justify-content: center;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  <span class="meta-value">system</span>
+                  <span style="color:#d1d5db; margin: 0 2px;">·</span>
+                  <span class="node-version-badge active">v1 active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3: planner -->
+          <div class="abs-node" style="left: 50%; transform: translateX(-50%); top: 355px;">
+            <div class="graph-node agent-node active" style="width: 250px;">
+              <div class="node-header">
+                <span class="node-name">planner</span>
+                <span class="node-version-badge active">v1 active</span>
+              </div>
+              <div class="node-meta">
+                <div class="node-meta-row">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  <span class="meta-value">system</span>
+                  <span style="color:#d1d5db; margin: 0 2px;">·</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                  <span class="meta-value">Mar 1, 2026</span>
+                </div>
+                <div class="node-note">"Initial seed"</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 4: tlc_agent, cc_agent, re_agent (parallel) -->
+          <div class="abs-node" style="left: 40px; top: 480px;">
+            <div class="graph-node agent-node active" style="width: 240px;">
+              <div class="node-header">
+                <span class="node-name">tlc_agent</span>
+                <span class="node-version-badge active">v3 active</span>
+              </div>
+              <div class="node-meta">
+                <div class="node-meta-row">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  <span class="meta-value">bob</span>
+                  <span style="color:#d1d5db; margin: 0 2px;">·</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                  <span class="meta-value">Mar 3, 2026</span>
+                </div>
+                <div class="node-note">"Add solvent tips"</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="abs-node" style="left: 50%; transform: translateX(-50%); top: 480px;">
+            <div class="graph-node agent-node active" style="width: 240px;">
+              <div class="node-header">
+                <span class="node-name">cc_agent</span>
+                <span class="node-version-badge active">v1 active</span>
+              </div>
+              <div class="node-meta">
+                <div class="node-meta-row">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  <span class="meta-value">system</span>
+                  <span style="color:#d1d5db; margin: 0 2px;">·</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                  <span class="meta-value">Mar 1, 2026</span>
+                </div>
+                <div class="node-note">"Initial seed"</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="abs-node" style="right: 40px; top: 480px;">
+            <div class="graph-node agent-node active" style="width: 240px;">
+              <div class="node-header">
+                <span class="node-name">re_agent</span>
+                <span class="node-version-badge active">v1 active</span>
+              </div>
+              <div class="node-meta">
+                <div class="node-meta-row">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  <span class="meta-value">system</span>
+                  <span style="color:#d1d5db; margin: 0 2px;">·</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                  <span class="meta-value">Mar 1, 2026</span>
+                </div>
+                <div class="node-note">"Initial seed"</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 5: END -->
+          <div class="abs-node" style="left: 50%; transform: translateX(-50%); top: 588px;">
+            <div class="graph-node end-node">
+              <div class="node-name">END</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

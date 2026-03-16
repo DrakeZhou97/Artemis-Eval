@@ -1,0 +1,27 @@
+# Artemis-Eval — Cloud deployment compose file
+# Usage:
+#   Copy this file to the Linux server, then run:
+#     docker compose -f docker-compose.cloud.yaml up -d
+#
+#   Override image coordinates via env vars or a .env file next to this file:
+#     ECR_REGISTRY=432084094746.dkr.ecr.cn-northwest-1.amazonaws.com.cn
+#     ECR_REPOSITORY=artemis-eval
+#     IMAGE_TAG=production-latest
+
+services:
+  artemis-eval:
+    image: ${ECR_REGISTRY:-432084094746.dkr.ecr.cn-northwest-1.amazonaws.com.cn}/${ECR_REPOSITORY:-artemis-eval}:${IMAGE_TAG:-production-latest}
+    container_name: artemis-eval
+    restart: unless-stopped
+    ports:
+      - "61241:61241"
+    environment:
+      - BACKEND_URL=http://bic-agent-backend:8124
+      - BACKEND_URL_DEV=http://bic-agent-backend:8124
+      - BACKEND_URL_PROD=http://bic-agent-backend:8124
+    networks:
+      - infra-net
+
+networks:
+  infra-net:
+    external: true
