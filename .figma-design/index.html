@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artemis - Activate Prompts</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #fff; color: #101828; }
+
+  .page { display: flex; width: 1440px; height: 900px; overflow: hidden; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 256px; min-width: 256px; height: 100%;
+    background: #fff; border-right: 1px solid #e5e7eb;
+    display: flex; flex-direction: column;
+  }
+  .sidebar-header {
+    padding: 24px; border-bottom: 1px solid #e5e7eb;
+    display: flex; align-items: center; gap: 12px; height: 101px;
+  }
+  .logo-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, #9810FA 0%, #155DFC 100%);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .logo-icon svg { color: #fff; }
+  .logo-text h1 { font-size: 24px; font-weight: 600; line-height: 36px; letter-spacing: 0.07px; color: #101828; }
+  .logo-text p { font-size: 12px; font-weight: 400; line-height: 16px; color: #6a7282; }
+
+  .nav { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+  .nav-link {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-radius: 10px;
+    font-size: 16px; font-weight: 500; line-height: 24px; letter-spacing: -0.31px;
+    color: #364153; text-decoration: none; cursor: pointer;
+  }
+  .nav-link.active { background: #faf5ff; color: #8200db; }
+  .nav-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  .sidebar-footer { border-top: 1px solid #e5e7eb; padding: 16px; }
+  .pro-tip {
+    background: linear-gradient(158deg, #faf5ff 0%, #eff6ff 100%);
+    border-radius: 10px; padding: 16px;
+  }
+  .pro-tip-title { font-size: 14px; font-weight: 500; line-height: 20px; letter-spacing: -0.15px; color: #101828; margin-bottom: 4px; }
+  .pro-tip-text { font-size: 12px; font-weight: 400; line-height: 16px; color: #4a5565; }
+
+  /* Main */
+  .main-wrap {
+    flex: 1; display: flex; flex-direction: column;
+    background: #f9fafb; overflow: hidden;
+  }
+
+  .top-bar {
+    height: 71px; background: #fff; border-bottom: 1px solid #e5e7eb;
+    display: flex; align-items: center; justify-content: flex-end; padding-right: 32px;
+  }
+  .env-switch { display: flex; align-items: center; gap: 12px; }
+  .env-label { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: -0.15px; color: #4a5565; }
+  .env-buttons { display: flex; gap: 8px; }
+  .env-btn {
+    padding: 8px 16px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; line-height: 20px; letter-spacing: -0.15px;
+    border: none; cursor: pointer;
+  }
+  .env-btn.active { background: #dbeafe; color: #1447e6; border: 1px solid #8ec5ff; }
+  .env-btn.inactive { background: #f3f4f6; color: #4a5565; border: 1px solid transparent; }
+
+  .content {
+    flex: 1; padding: 32px 64px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 24px;
+    max-width: 1100px;
+  }
+
+  /* Back link */
+  .back-link {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 500; line-height: 20px; letter-spacing: -0.15px;
+    color: #4a5565; cursor: pointer; text-decoration: none;
+  }
+  .back-link svg { width: 16px; height: 16px; }
+
+  /* Page header */
+  .page-title-row { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .page-title-row svg { width: 28px; height: 28px; color: #8200db; }
+  .page-title { font-size: 30px; font-weight: 700; line-height: 36px; letter-spacing: 0.4px; color: #101828; }
+  .page-subtitle { font-size: 16px; font-weight: 400; line-height: 24px; letter-spacing: -0.31px; color: #4a5565; }
+
+  /* Cards grid */
+  .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  .prompt-card {
+    background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 14px;
+    padding: 24px; display: flex; flex-direction: column; gap: 12px;
+    position: relative;
+  }
+
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; }
+  .card-title { font-size: 18px; font-weight: 600; line-height: 28px; letter-spacing: -0.44px; color: #101828; }
+  .active-indicator {
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    color: #16a34a;
+  }
+  .active-indicator svg { width: 20px; height: 20px; }
+
+  .card-badges { display: flex; align-items: center; gap: 8px; }
+  .badge-env {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #eceef2; border-radius: 6px; padding: 2px 8px;
+    font-size: 12px; font-weight: 500; line-height: 16px; color: #030213;
+  }
+  .badge-date {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 400; line-height: 16px; color: #6a7282;
+  }
+  .badge-date svg { width: 12px; height: 12px; color: #9ca3af; }
+
+  .card-body {
+    font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: -0.15px;
+    color: #4a5565; display: -webkit-box; -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  .card-tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #f3f4f6; border-radius: 6px; padding: 2px 8px;
+    font-size: 12px; font-weight: 400; line-height: 16px; color: #4a5565;
+  }
+
+  .card-footer {
+    display: flex; align-items: center; gap: 8px;
+    border-top: 1px solid #e5e7eb; padding-top: 12px;
+  }
+  .btn-view {
+    flex: 1; height: 36px; display: flex; align-items: center; justify-content: center;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;
+    line-height: 20px; letter-spacing: -0.15px; color: #364153; cursor: pointer;
+  }
+  .btn-icon {
+    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer;
+  }
+  .btn-icon svg { width: 16px; height: 16px; color: #4a5565; }
+  .btn-icon.danger svg { color: #ef4444; }
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+
+<div class="page">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+          <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+          <path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>Artemis</h1>
+        <p>Observe and Evaluation</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+        </svg>
+        Dashboard
+      </a>
+      <a class="nav-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+        Activate
+      </a>
+      <a class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/><path d="M12 5v14"/>
+        </svg>
+        New Prompt
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="pro-tip">
+        <div class="pro-tip-title">Pro Tip</div>
+        <div class="pro-tip-text">Use tags to organize and quickly find your prompts</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-wrap">
+    <header class="top-bar">
+      <div class="env-switch">
+        <span class="env-label">Environment:</span>
+        <div class="env-buttons">
+          <button class="env-btn active">DEV</button>
+          <button class="env-btn inactive">PROD</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+      <a class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/><path d="M12 5v14"/>
+        </svg>
+        Back to Dashboard
+      </a>
+
+      <div>
+        <div class="page-title-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+          <h1 class="page-title">Active Prompts</h1>
+        </div>
+        <p class="page-subtitle">All currently activated prompt versions across your agent nodes</p>
+      </div>
+
+      <!-- Cards -->
+      <div class="cards-grid">
+        <!-- Card: tlc_agent -->
+        <div class="prompt-card">
+          <div class="card-header">
+            <div class="card-title">tlc_agent</div>
+            <div class="active-indicator">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" opacity="0.15"/>
+                <path d="m9 12 2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="badge-env">v3 · active</span>
+            <span class="badge-date">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              Mar 3, 2026
+            </span>
+          </div>
+          <div class="card-body">
+            You are a senior TLC analyst. Given a compound structure and target separation, recommend TLC conditions including solvent systems, plate types, and detection methods. Include solvent tips for optimal resolution.
+          </div>
+          <div class="card-tags">
+            <span class="tag">tlc</span>
+            <span class="tag">analysis</span>
+            <span class="tag">chromatography</span>
+          </div>
+          <div class="card-footer">
+            <button class="btn-view">View Details</button>
+            <button class="btn-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+              </svg>
+            </button>
+            <button class="btn-icon danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card: planner -->
+        <div class="prompt-card">
+          <div class="card-header">
+            <div class="card-title">planner</div>
+            <div class="active-indicator">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" opacity="0.15"/>
+                <path d="m9 12 2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="badge-env">v1 · active</span>
+            <span class="badge-date">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              Mar 1, 2026
+            </span>
+          </div>
+          <div class="card-body">
+            You are a planner agent responsible for decomposing complex lab tasks into sub-steps. Analyze the user request, identify required expertise, and dispatch to the appropriate specialist agents.
+          </div>
+          <div class="card-tags">
+            <span class="tag">planning</span>
+            <span class="tag">orchestration</span>
+          </div>
+          <div class="card-footer">
+            <button class="btn-view">View Details</button>
+            <button class="btn-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+              </svg>
+            </button>
+            <button class="btn-icon danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card: user_admittance -->
+        <div class="prompt-card">
+          <div class="card-header">
+            <div class="card-title">user_admittance</div>
+            <div class="active-indicator">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" opacity="0.15"/>
+                <path d="m9 12 2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="badge-env">v2 · active</span>
+            <span class="badge-date">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              Mar 2, 2026
+            </span>
+          </div>
+          <div class="card-body">
+            You are a gate-keeping agent. Validate user credentials and determine access level before allowing entry into the lab automation pipeline. Refined gate conditions for enhanced security.
+          </div>
+          <div class="card-tags">
+            <span class="tag">security</span>
+            <span class="tag">access</span>
+          </div>
+          <div class="card-footer">
+            <button class="btn-view">View Details</button>
+            <button class="btn-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+              </svg>
+            </button>
+            <button class="btn-icon danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card: cc_agent -->
+        <div class="prompt-card">
+          <div class="card-header">
+            <div class="card-title">cc_agent</div>
+            <div class="active-indicator">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" opacity="0.15"/>
+                <path d="m9 12 2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="badge-env">v1 · active</span>
+            <span class="badge-date">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              Mar 1, 2026
+            </span>
+          </div>
+          <div class="card-body">
+            You are a column chromatography specialist. Given purification requirements, recommend appropriate column conditions, solvent gradients, and fraction collection strategies.
+          </div>
+          <div class="card-tags">
+            <span class="tag">chromatography</span>
+            <span class="tag">purification</span>
+          </div>
+          <div class="card-footer">
+            <button class="btn-view">View Details</button>
+            <button class="btn-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+              </svg>
+            </button>
+            <button class="btn-icon danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

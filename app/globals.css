@@ -4,3 +4,93 @@
 		light --default,
 		dark --prefersdark;
 }
+
+@layer base {
+	:root {
+		/* Brand gradient */
+		--gradient-brand: linear-gradient(135deg, #9810fa 0%, #155dfc 100%);
+		--gradient-tip: linear-gradient(158deg, #faf5ff 0%, #eff6ff 100%);
+
+		/* Semantic colors (light) */
+		--color-primary: #8200db;
+		--color-primary-light: #f3e8ff;
+		--color-primary-bg: #faf5ff;
+		--color-blue: #1447e6;
+		--color-blue-light: #dbeafe;
+		--color-blue-border: #8ec5ff;
+		--color-green: #16a34a;
+		--color-green-light: #dcfce7;
+		--color-red: #ef4444;
+		--color-orange: #ff6900;
+		--color-yellow-bg: #fffbeb;
+		--color-yellow-border: #fcd34d;
+
+		/* Text hierarchy */
+		--color-text-heading: #101828;
+		--color-text-primary: #364153;
+		--color-text-secondary: #4a5565;
+		--color-text-tertiary: #6a7282;
+		--color-text-muted: #9ca3af;
+		--color-text-placeholder: #717182;
+
+		/* Surfaces */
+		--color-bg-page: #f9fafb;
+		--color-bg-card: #ffffff;
+		--color-bg-input: #f3f3f5;
+		--color-bg-badge: #eceef2;
+		--color-bg-tag: #f3f4f6;
+		--color-bg-inactive: #f3f4f6;
+
+		/* Borders */
+		--color-border: #e5e7eb;
+		--color-border-card: rgba(0, 0, 0, 0.1);
+		--color-border-line: #d1d5db;
+
+		/* Sidebar */
+		--sidebar-width: 208px;
+
+		/* Border radius scale */
+		--radius-badge: 6px;
+		--radius-button: 8px;
+		--radius-sidebar-item: 10px;
+		--radius-node: 12px;
+		--radius-card: 14px;
+		--radius-pill: 50px;
+	}
+
+	/* Dark theme overrides */
+	[data-theme="dark"],
+	.dark,
+	:root:has(> [data-theme="dark"]) {
+		--color-primary: #a855f7;
+		--color-primary-light: #2e1065;
+		--color-primary-bg: #1e1033;
+		--color-blue: #60a5fa;
+		--color-blue-light: #1e3a5f;
+		--color-blue-border: #3b82f6;
+		--color-green: #4ade80;
+		--color-green-light: #14532d;
+		--color-red: #f87171;
+		--color-orange: #fb923c;
+		--color-yellow-bg: #422006;
+		--color-yellow-border: #a16207;
+
+		--color-text-heading: #f9fafb;
+		--color-text-primary: #e5e7eb;
+		--color-text-secondary: #9ca3af;
+		--color-text-tertiary: #6b7280;
+		--color-text-muted: #4b5563;
+		--color-text-placeholder: #6b7280;
+
+		--color-bg-page: #111827;
+		--color-bg-card: #1f2937;
+		--color-bg-input: #374151;
+		--color-bg-badge: #374151;
+		--color-bg-tag: #374151;
+		--color-bg-inactive: #374151;
+
+		--color-border: #374151;
+		--color-border-card: rgba(255, 255, 255, 0.1);
+		--color-border-line: #4b5563;
+	}
+}
