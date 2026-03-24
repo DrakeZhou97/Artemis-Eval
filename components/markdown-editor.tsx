@@ -27,7 +27,7 @@ export default function MarkdownEditor({ value, onChange, disabled = false }: Ma
 				value={value}
 				onChange={(val) => onChange(val ?? "")}
 				height={400}
-				preview="edit"
+				preview="live"
 				textareaProps={{
 					placeholder: "Write your prompt content here...",
 					disabled,

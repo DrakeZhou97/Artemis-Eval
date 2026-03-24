@@ -2,7 +2,7 @@
 
 import { Circle, FileText, GitBranch } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import GraphTimeline from "@/components/graph-timeline";
+import GraphFlow from "@/components/graph-flow";
 import SearchBar from "@/components/search-bar";
 import StatCard from "@/components/stat-card";
 import { fetchPrompts, fetchVersions } from "@/lib/api-client";
@@ -93,8 +93,16 @@ export default function DashboardPage() {
 					label="Environment"
 					value={envConfig.label}
 					icon={Circle}
-					iconBg={envConfig.label === "Production" ? "var(--color-green-light, #dcfce7)" : "var(--color-orange-light, #ffedd5)"}
-					iconColor={envConfig.label === "Production" ? "var(--color-green, #16a34a)" : "var(--color-orange, #ea580c)"}
+					iconBg={
+						envConfig.label === "Production"
+							? "var(--color-green-light, #dcfce7)"
+							: "var(--color-orange-light, #ffedd5)"
+					}
+					iconColor={
+						envConfig.label === "Production"
+							? "var(--color-green, #16a34a)"
+							: "var(--color-orange, #ea580c)"
+					}
 				/>
 			</div>
 
@@ -112,7 +120,7 @@ export default function DashboardPage() {
 					<span className="loading loading-spinner loading-lg text-[var(--color-primary)]" />
 				</div>
 			) : (
-				<GraphTimeline prompts={filteredPrompts} />
+				<GraphFlow prompts={filteredPrompts} />
 			)}
 		</div>
 	);

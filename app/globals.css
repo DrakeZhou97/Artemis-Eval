@@ -107,6 +107,22 @@
 	box-sizing: border-box;
 }
 
+/* React Flow animated edge — flowing dash effect */
+@keyframes flow-dash {
+	to {
+		stroke-dashoffset: -28;
+	}
+}
+
+.flow-edge-animated {
+	animation: flow-dash 1.5s linear infinite;
+}
+
+/* React Flow overrides for dark theme compatibility */
+.react-flow__controls button svg {
+	fill: var(--color-text-secondary);
+}
+
 /* Restore list styles in preview pane */
 .wmde-markdown ul {
 	list-style-type: disc;
