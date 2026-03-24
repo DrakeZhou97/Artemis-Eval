@@ -95,11 +95,25 @@
 	}
 }
 
-/* Restore list styles inside the markdown editor/preview (Tailwind preflight strips them) */
+/*
+ * Undo Tailwind preflight only inside the editor's text area (textarea + pre overlay).
+ * The toolbar is left untouched.
+ */
+
+.w-md-editor-text *,
+.w-md-editor-text *::before,
+.w-md-editor-text *::after {
+	all: revert;
+	box-sizing: border-box;
+}
+
+/* Restore list styles in preview pane */
 .wmde-markdown ul {
 	list-style-type: disc;
+	padding-left: 2em;
 }
 
 .wmde-markdown ol {
 	list-style-type: decimal;
+	padding-left: 2em;
 }
