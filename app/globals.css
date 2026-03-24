@@ -94,3 +94,12 @@
 		--color-border-line: #4b5563;
 	}
 }
+
+/* Restore list styles inside the markdown editor/preview (Tailwind preflight strips them) */
+.wmde-markdown ul {
+	list-style-type: disc;
+}
+
+.wmde-markdown ol {
+	list-style-type: decimal;
+}
